@@ -29,7 +29,7 @@ _Note: I have only tested this on the `ISKRA AM550 ED-1`._
 T Zigbee board contains two hardware serials although second one is not usable if TLSR8258 Zigbee module is activated.  Because of that, first hardware serial is used which means debugging capatibilities are sort of limited to reading of messages from serial port. 
 
 *For testing purposes it is also possible to enable DEBUG_SERIAL in settings.h file - this will allow you to type some test input via Serial Monitor.*
-![](../docs/tzigbee_pins.jpg)
+![](docs/tzigbee_pins.jpg)
 Connect the ESP32 to an RJ11 cable/connector following the diagram. Ignore line 1 & 6 if you do not intend to power your board from the meter.
 ![](../docs/circut.png)
 | P1 pin   | ESP32 Pin |
