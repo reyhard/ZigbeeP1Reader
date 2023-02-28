@@ -139,7 +139,8 @@ void handleClick(void)
 // Trigger full update of data on double click of button
 void handleDoubleClick(void)
 {
-    LAST_UPDATE_SENT = 0;
+    LAST_FULL_UPDATE_SENT = 0;
+    Serial.println("Trying to trigger full data update");
 }
 
 void handleLongPress()
@@ -238,12 +239,12 @@ void sendDataToBroker()
 #endif
             if(telegramObjects[i].attributeID == 0x4004) {
                 uint56_t report;
-                telegramObjects[4].sendData = false;
-                telegramObjects[5].sendData = false;
-                telegramObjects[6].sendData = false;
-                report.high = telegramObjects[4].value;
-                report.mid = telegramObjects[5].value;
-                report.low = telegramObjects[6].value;
+                telegramObjects[7].sendData = false;
+                telegramObjects[8].sendData = false;
+                telegramObjects[9].sendData = false;
+                report.high = telegramObjects[7].value;
+                report.mid = telegramObjects[8].value;
+                report.low = telegramObjects[9].value;
                 sendMetric3(telegramObjects[i].name, report, telegramObjects[i].attributeID);
 
             }else{
@@ -298,38 +299,58 @@ void setupDataReadout()
     telegramObjects[3].attributeID = (int) 16387;
     strcpy(telegramObjects[3].code, "1-0:1.7.0");
     telegramObjects[3].endChar = '*';
-    telegramObjects[3].sendThreshold = 0.05;
-
-    // 1-0:21.7.0(00.378*kW)
-    // 1-0:21.7.0 = Instantaan vermogen Elektriciteit levering L1
-    telegramObjects[4].name = "power_l1";
-    telegramObjects[4].attributeID = 0x4004;
-    strcpy(telegramObjects[4].code, "1-0:21.7.0");
-    telegramObjects[4].endChar = '*';
-    telegramObjects[4].sendThreshold = 0.05;
-
-    // 1-0:41.7.0(00.378*kW)
-    // 1-0:41.7.0 = Instantaan vermogen Elektriciteit levering L2
-    telegramObjects[5].name = "power_l2";
-    telegramObjects[5].attributeID = 0x4004;
-    strcpy(telegramObjects[5].code, "1-0:41.7.0");
-    telegramObjects[5].endChar = '*';
-    telegramObjects[5].sendThreshold = 0.05;
-
-    // 1-0:61.7.0(00.378*kW)
-    // 1-0:61.7.0 = Instantaan vermogen Elektriciteit levering L3
-    telegramObjects[6].name = "power_l3";
-    telegramObjects[6].attributeID = 0x4004;
-    strcpy(telegramObjects[6].code, "1-0:61.7.0");
-    telegramObjects[6].endChar = '*';
-    telegramObjects[6].sendThreshold = 0.05;
+    telegramObjects[3].sendThreshold = (long) 3;
 
     // 0-1:24.2.3(150531200000S)(00811.923*m3)
     // 0-1:24.2.3 = Gas (DSMR v5.0) on Belgian meters
-    telegramObjects[7].name = "gas";
-    telegramObjects[7].attributeID = (int) 16389;
-    strcpy(telegramObjects[7].code, "0-1:24.2.1");
+    telegramObjects[4].name = "gas";
+    telegramObjects[4].attributeID = (int) 16389;
+    strcpy(telegramObjects[4].code, "0-1:24.2.1");
+    telegramObjects[4].endChar = '*';
+
+    // 0-1:24.2.3(150531200000S)(00811.923*m3)
+    // 0-1:24.2.3 = Gas (DSMR v5.0) on Belgian meters
+    telegramObjects[4].name = "gas";
+    telegramObjects[4].attributeID = (int) 16389;
+    strcpy(telegramObjects[4].code, "0-1:24.2.1");
+    telegramObjects[4].endChar = '*';
+    
+    // 0-0:96.7.21(00008)
+    // Number of power failures in any phases
+    telegramObjects[5].name = "fail";
+    telegramObjects[5].attributeID = (int) 16390;
+    strcpy(telegramObjects[5].code, "0-0:96.7.21");
+
+    // 0-0:96.7.9(00002)
+    // Number of long power failures in any phases
+    telegramObjects[6].name = "fail_long";
+    telegramObjects[6].attributeID = (int) 16391;
+    strcpy(telegramObjects[6].code, "0-0:96.7.9");
+/*
+    // 1-0:21.7.0(00.378*kW)
+    // 1-0:21.7.0 = Instantaan vermogen Elektriciteit levering L1
+    telegramObjects[7].name = "power_l1";
+    telegramObjects[7].attributeID = 0x4004;
+    strcpy(telegramObjects[7].code, "1-0:21.7.0");
     telegramObjects[7].endChar = '*';
+    telegramObjects[7].sendThreshold = (long) 3;
+
+    // 1-0:41.7.0(00.378*kW)
+    // 1-0:41.7.0 = Instantaan vermogen Elektriciteit levering L2
+    telegramObjects[8].name = "power_l2";
+    telegramObjects[8].attributeID = 0x4004;
+    strcpy(telegramObjects[8].code, "1-0:41.7.0");
+    telegramObjects[8].endChar = '*';
+    telegramObjects[8].sendThreshold = (long) 3;
+
+    // 1-0:61.7.0(00.378*kW)
+    // 1-0:61.7.0 = Instantaan vermogen Elektriciteit levering L3
+    telegramObjects[9].name = "power_l3";
+    telegramObjects[9].attributeID = 0x4004;
+    strcpy(telegramObjects[9].code, "1-0:61.7.0");
+    telegramObjects[9].endChar = '*';
+    telegramObjects[9].sendThreshold = (long) 3;
+*/
 
 #ifdef DEBUG
     Serial.println("Data initialized:");
@@ -438,9 +459,13 @@ bool decodeTelegram(int len)
             if (newValue != telegramObjects[i].value)
             {
                 // Do not send values if they change by some really minor value
-                if(abs(telegramObjects[i].value - newValue) > telegramObjects[i].value * telegramObjects[i].sendThreshold) {
+                if(abs(telegramObjects[i].value - newValue) > telegramObjects[i].sendThreshold) {
 
                     telegramObjects[i].sendData = true;
+                }else{  
+#ifdef DEBUG
+                    Serial.println((String) "Value of: " + telegramObjects[i].name + " with value: " + newValue + " old " + telegramObjects[i].value + " was rejected due to threshold");
+#endif
                 }
                 telegramObjects[i].value = newValue;
             }

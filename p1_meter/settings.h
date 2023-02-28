@@ -8,15 +8,15 @@
 
 // Update treshold in milliseconds,
 // this will also send values that are more than the tresholds time the same
-// #define UPDATE_FULL_INTERVAL 600000 // 10 minutes
+#define UPDATE_FULL_INTERVAL 600000 // 10 minutes
 // #define UPDATE_FULL_INTERVAL 1800000 // 30 minutes
-#define UPDATE_FULL_INTERVAL 3600000 // 1 Hour
+// #define UPDATE_FULL_INTERVAL 3600000 // 1 Hour
 
 #define BAUD_RATE 115200
 #define SERIAL_PIN_RX 5
 #define P1_MAXLINELENGTH 1050
 
-#define NUMBER_OF_READOUTS 8
+#define NUMBER_OF_READOUTS 7
 
 long LAST_RECONNECT_ATTEMPT = 0;
 long LAST_UPDATE_SENT = 0;
@@ -29,7 +29,7 @@ struct TelegramDecodedObject
   String name;
   uint16_t attributeID;
   long value;
-  float sendThreshold = 0;
+  long sendThreshold = 0;
   char code[16];
   char startChar = '(';
   char endChar = ')';
