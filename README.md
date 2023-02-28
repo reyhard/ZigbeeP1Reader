@@ -31,7 +31,7 @@ T Zigbee board contains two hardware serials although second one is not usable i
 *For testing purposes it is also possible to enable DEBUG_SERIAL in settings.h file - this will allow you to type some test input via Serial Monitor.*
 ![](docs/tzigbee_pins.jpg)
 Connect the ESP32 to an RJ11 cable/connector following the diagram. Ignore line 1 & 6 if you do not intend to power your board from the meter.
-![](../docs/circut.png)
+![](docs/circut.png)
 | P1 pin   | ESP32 Pin |
 | ----     | ---- |
 | 2 - RTS  | 3.3v |
@@ -47,7 +47,7 @@ On most models a 10K resistor should be used between the ESP's 3.3v and the p1's
 <p>
 When using a 6 pin cable you can use the power source provided by the meter.
   
-![](../docs/circut_power.png)
+![](docs/circut_power.png)
 
 | P1 pin   | ESP32 Pin |
 | ----     | ---- |
@@ -62,14 +62,14 @@ When using a 6 pin cable you can use the power source provided by the meter.
 </details>
 
 End result
-![](../docs/example_wiring_1.jpg)
-![](../docs/example_wiring_2.jpg)
+![](docs/example_wiring_1.jpg)
+![](docs/example_wiring_2.jpg)
 ### Update Firmware
 Before going any further, make sure that TLSR8258 is flashed with correct firmware, to do so
 
 Adjust the DIP switch:
 
-![](../docs/upload_mode.png)
+![](docs/upload_mode.png)
 
 Change firmware on TLSR8258 to [hciDevice_ZR_8258_SDK_eb644f1_MD5_3e7c395bacca28475952808a79ff2ec1.bin](../../firmware/hciDevice_ZR_8258_SDK_eb644f1_MD5_3e7c395bacca28475952808a79ff2ec1.bin)
 using instructions mentioned in [official documentation](https://zbhci.readthedocs.io/en/latest/user-guide/burning.html)
@@ -78,7 +78,7 @@ using instructions mentioned in [official documentation](https://zbhci.readthedo
 
 Adjust the DIP switch:
 
-![](../docs/upload_mode_c3.png)
+![](docs/upload_mode_c3.png)
 
 After that, you can open project in Visual Studio Code using PlatformIO and then build and upload  [p1_reader.ino](/p1_meter/p1_reader.ino) sketch to ESP32.
 
